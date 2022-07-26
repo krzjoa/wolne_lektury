@@ -9,6 +9,7 @@ Created on Sat Jul 23 17:13:19 2022
 
 # DAISY: https://en.wikipedia.org/wiki/Digital_Accessible_Information_System
 
+
 MAIN = "https://wolnelektury.pl"
 API = f"{MAIN}/api"
 

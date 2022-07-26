@@ -11,10 +11,11 @@ import re
 import pandas as pd
 import urllib.request
 import warnings
+from collections import OrderedDict
 from tqdm import tqdm
 
-import urls
-from get_lists import get_books
+from . import urls
+from .get_lists import get_books
 
 
 def _get_media_url(book_name: str, 
@@ -59,7 +60,7 @@ def get_texts(book_list: pd.DataFrame = None,
               kind: str = None, 
               theme: str = None, 
               collection: str = None, 
-              trim: bool = True):
+              trim: bool = True) -> OrderedDict:
     """Get texts according to the defined query of passed book list
     
     Parameters
@@ -80,6 +81,11 @@ def get_texts(book_list: pd.DataFrame = None,
         A selected theme. Can be combined with other arguments (excluding book_list and book).
     trim: bool
         Remove author, title and the "Wolne Lektury" info at the end.
+        
+    Returns
+    -------
+    OrderedDict
+        An OrderedDict, where keys are urls an values are strings with book text
     
     """
     
@@ -94,7 +100,7 @@ def get_texts(book_list: pd.DataFrame = None,
                 collection=collection
             )
         
-    text_list = []
+    text_list = OrderedDict()
     book_url_list = book_list['url'].tolist()
     
     for book in tqdm(book_url_list):
@@ -106,7 +112,7 @@ def get_texts(book_list: pd.DataFrame = None,
         if text:
             if trim:
                 text = trim_text(text)
-            text_list.append(text)
+            text_list.update({url : text})
         else:
             warning = f"{url} not found and skipped."
             warnings.warn(warning)
