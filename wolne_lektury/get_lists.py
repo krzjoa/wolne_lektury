@@ -12,16 +12,22 @@ import pandas as pd
 import os
 from slugify import slugify
 
-def _get_list(url: str) -> pd.DataFrame:
+
+def _get_list(url: str, normalize: bool = False) -> pd.DataFrame:
     url = os.path.join(urls.API, url)
     response = requests.get(url).json()
+    if normalize:
+        response = pd.json_normalize(response)
     return pd.DataFrame.from_records(response)
 
+
 def _q(path_type: str, query: str):
+    """Prepare query"""
     return "" if not query else os.path.join(path_type, slugify(query))
 
 
-def _chained_book_query(author: str = None, 
+def _chained_book_query(book: str = None,
+                        author: str = None, 
                         epoch: str = None, 
                         genre: str = None,
                         kind: str = None, 
@@ -35,52 +41,62 @@ def _chained_book_query(author: str = None,
         raise ValueError(f"You passed {book_type} as book type, which is none" \
                          f"of {*available_book_types,}")
     
+    if book:
+        query = os.path.join(urls.BOOKS, slugify(book))
+        normalize = True
+    else:
+        query = os.path.join(
+                _q(urls.AUTHORS, author),
+                _q(urls.EPOCHS, epoch),
+                _q(urls.GENRES, genre),
+                _q(urls.KINDS, kind),
+                _q(urls.THEMES, theme),
+                _q(urls.COLLECTIONS, collection),
+                book_type
+            )
+        normalize = False
+        
+    return _get_list(query, normalize=normalize)
     
-    query = os.path.join(
-            _q(urls.AUTHORS, author),
-            _q(urls.EPOCHS, epoch),
-            _q(urls.GENRES, genre),
-            _q(urls.KINDS, kind),
-            _q(urls.THEMES, theme),
-            _q(urls.COLLECTIONS, collection),
-            book_type
-        )
     
-    return _get_list(query)
-    
-    
-def get_books(author: str = None, 
+def get_books(book: str = None,
+              author: str = None, 
               epoch: str = None, 
               genre: str = None,
               kind: str = None, 
               theme: str = None, 
               collection: str = None) -> pd.DataFrame:
     """Get list of books"""
-    return _chained_book_query(author, epoch, genre, 
-                               kind, theme, collection, book_type=urls.BOOKS)
+    return _chained_book_query(book, author, epoch, genre, 
+                               kind, theme, collection, 
+                               book_type=urls.BOOKS)
 
-def get_audiobooks(author: str = None, 
+def get_audiobooks(book: str = None, 
+                   author: str = None, 
                    epoch: str = None, 
                    genre: str = None,
                    kind: str = None, 
                    theme: str = None, 
                    collection: str = None) -> pd.DataFrame:
     """Get list of audiobooks"""
-    return _chained_book_query(author, epoch, genre, 
+    return _chained_book_query(book, author, epoch, genre, 
                                kind, theme, collection, 
                                book_type=urls.AUDIOBOOKS)
 
-def get_daisy(author: str = None, 
+def get_daisy(book: str = None,
+              author: str = None, 
               epoch: str = None, 
               genre: str = None,
               kind: str = None, 
               theme: str = None, 
               collection: str = None) -> pd.DataFrame:
     """Get list of books in DAISY version"""
-    return _chained_book_query(author, epoch, genre, 
+    return _chained_book_query(book, author, epoch, genre, 
                                kind, theme, collection, 
                                book_type=urls.DAISY)
 
+
+# TODO: define specific author, epoch etc.
 
 def get_authors() -> pd.DataFrame:
     """Get list of authors"""
@@ -108,8 +124,7 @@ def get_collections() -> pd.DataFrame:
 
 
 if __name__ == '__main__':
-    
-    books = get_books(author="Juliusz Słowacki")
-    
-    print(get_books(author="Juliusz Słowacki"))
+    book = get_books(book="Pan Tadeusz") 
+    # books = get_books(author="Juliusz Słowacki") 
+    # print(get_books(author="Juliusz Słowacki"))
     

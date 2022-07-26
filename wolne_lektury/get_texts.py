@@ -11,6 +11,7 @@ import re
 import pandas as pd
 import urllib.request
 import warnings
+from tqdm import tqdm
 
 import urls
 from get_lists import get_books
@@ -42,16 +43,16 @@ def trim_text(text):
     
     # Remove info at the end
     # Last 1263, but it may change
+    # Use regex, not working with Pan Tadeusz
     text = text[:-1264]
     
     # Trailing \r\n ???
     
     return text
-    
-    
         
 
 def get_texts(book_list: pd.DataFrame = None,
+              book: str = None,
               author: str = None, 
               epoch: str = None, 
               genre: str = None,
@@ -59,13 +60,32 @@ def get_texts(book_list: pd.DataFrame = None,
               theme: str = None, 
               collection: str = None, 
               trim: bool = True):
-    """Get texts according to the defined query of passed book list"""
+    """Get texts according to the defined query of passed book list
     
-    # TODO: add tqdm
-    # TODO: encoding
+    Parameters
+    ----------
+    book: str
+        The book title. If specified, you should not pass any other options.
+    author: str
+        A selected author. Can be combined with other arguments (excluding book_list and book).
+    epoch: str
+        A selected epoch. Can be combined with other arguments (excluding book_list and book).
+    genre: str
+        A seleted genre. Can be combined with other arguments (excluding book_list and book).
+    kind: str
+        A selected kind. Can be combined with other arguments (excluding book_list and book).
+    theme: str
+        A selected theme. Can be combined with other arguments (excluding book_list and book).
+    collection: str
+        A selected theme. Can be combined with other arguments (excluding book_list and book).
+    trim: bool
+        Remove author, title and the "Wolne Lektury" info at the end.
+    
+    """
     
     if not book_list:
         book_list = get_books(
+                book=book,
                 author=author,
                 epoch=epoch,
                 genre=genre,
@@ -77,7 +97,7 @@ def get_texts(book_list: pd.DataFrame = None,
     text_list = []
     book_url_list = book_list['url'].tolist()
     
-    for book in book_url_list:
+    for book in tqdm(book_url_list):
         url = _get_media_url(book, 
                              book_type = urls.BOOK, 
                              book_format = urls.TXT)
@@ -88,12 +108,13 @@ def get_texts(book_list: pd.DataFrame = None,
                 text = trim_text(text)
             text_list.append(text)
         else:
-            warnings.warn(f"{url} not found and skipped.")
-    
-    
+            warning = f"{url} not found and skipped."
+            warnings.warn(warning)
+     
     return text_list
     
     
 if __name__ == '__main__':
+    # pan_tadeusz = get_texts(book="Pan Tadeusz")
     texts = get_texts(author="Juliusz Słowacki")
     

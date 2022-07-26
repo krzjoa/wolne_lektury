@@ -7,7 +7,7 @@ Created on Sat Jul 23 17:13:19 2022
 
 """
 
-# https://en.wikipedia.org/wiki/Digital_Accessible_Information_System
+# DAISY: https://en.wikipedia.org/wiki/Digital_Accessible_Information_System
 
 
 MAIN = "https://wolnelektury.pl"
@@ -24,8 +24,16 @@ THEMES      = "themes"
 COLLECTIONS = "collections"
 
 MEDIA = "media"
-BOOK = "book"
+
+BOOK      = "book"
 AUDIOBOOK = "audiobook"
 
-TXT = "txt"
+TXT  = "txt"
+PDF  = "pdf"
+EPUB = "epub"
+MOBI = "mobi"
+FB2  = "fb2"
+
+MP3 = "mp3"
+OGG = "ogg" # Ogg Vorbis
 
