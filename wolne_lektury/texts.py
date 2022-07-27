@@ -20,7 +20,7 @@ from .lists import get_books
 from .media import _get_media_url
 
 
-def read_remote_text(url: str):
+def _read_remote_text(url: str):
     try:
         with urllib.request.urlopen(url) as response:
             return response.read().decode("utf-8") 
@@ -45,9 +45,14 @@ def trim_text(text: str) -> str:
     str
         A trimmed string
         
-    
+    Examples
+    --------
+    >>> import wolbe_lektury as wl
+    >>> texts = wl.get_texts(author="Ignacy Krasicki", trim=False)
+    >>> untrimmed_text = list(texts.values())[0]
+    >>> trim_text(untrimmed_text)
     """
-     # TODO: remove both author and title in one query
+    # TODO: remove both author and title in one query
     
     # Remove author
     # See: https://stackoverflow.com/questions/15433188/what-is-the-difference-between-r-n-r-and-n
@@ -76,8 +81,21 @@ def get_texts(book_list: pd.DataFrame = None,
               trim: bool = True) -> OrderedDict:
     """Get texts according to the defined query of passed book list
     
+    For parameters such as book, author, epoch, genre and kind you can 
+    pass slugified or normal strings, e.g. 'Adam Mickiewicz' or 'adam-mickiewicz'.
+    In the first case, the string is automatically slugified behind the scene.
+    
+    If you pass a value to the 'language' argument, it will take an additional time
+    to fetch the data. It's because the we have to call the Wolne Lektury API
+    individually for each book in the loop to retrieve such data.    
+    
+    Bear in mind that lnaguage abbreviation may have unexpected format, e.g.
+    'pol' for Polish language (instead of 'pl', as usual).
+    
     Parameters
     ----------
+    book_list: pd.DataFrame
+        A pandas DataFrame with a list of books fetched with get_books function.
     book: str
         The book title. If specified, you should not pass any other options.
     author: str
@@ -95,6 +113,19 @@ def get_texts(book_list: pd.DataFrame = None,
     -------
     OrderedDict
         An OrderedDict, where keys are urls an values are strings with book text
+        
+    Examples
+    -------
+    >>> import wolne_lektury as wl
+    >>> sienkiewicz = wl.get_texts(author="Henryk Sienkiewicz", language="pol") 
+    >>> type(sienkiewicz)       
+    collections.OrderedDict
+    >>> print(list(sienkiewicz.keys())[0:5])
+    ['https://wolnelektury.pl/media/book/txt/bartek-zwyciezca.txt',
+     'https://wolnelektury.pl/media/book/txt/bez-dogmatu.txt',
+     'https://wolnelektury.pl/media/book/txt/janko-muzykant.txt',
+     'https://wolnelektury.pl/media/book/txt/krzyzacy-tom-drugi.txt',
+     'https://wolnelektury.pl/media/book/txt/krzyzacy-tom-pierwszy.txt']
     
     """
     
@@ -115,7 +146,7 @@ def get_texts(book_list: pd.DataFrame = None,
         url = _get_media_url(book, 
                              book_type = urls.BOOK, 
                              book_format = urls.TXT)
-        text = read_remote_text(url)
+        text = _read_remote_text(url)
         
         if text:
             if trim:
