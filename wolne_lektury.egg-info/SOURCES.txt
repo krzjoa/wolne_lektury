@@ -2,8 +2,10 @@ README.md
 pyproject.toml
 setup.cfg
 wolne_lektury/__init__.py
-wolne_lektury/get_lists.py
-wolne_lektury/get_texts.py
+wolne_lektury/enums.py
+wolne_lektury/lists.py
+wolne_lektury/media.py
+wolne_lektury/texts.py
 wolne_lektury/urls.py
 wolne_lektury.egg-info/PKG-INFO
 wolne_lektury.egg-info/SOURCES.txt

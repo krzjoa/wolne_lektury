@@ -4,6 +4,14 @@ wolne\_lektury package
 Submodules
 ----------
 
+wolne\_lektury.enums module
+---------------------------
+
+.. automodule:: wolne_lektury.enums
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 wolne\_lektury.lists module
 ---------------------------
 
