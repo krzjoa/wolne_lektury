@@ -15,7 +15,7 @@ release = '0.1.0'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    #'myst_parser',
+    'myst_parser',
     'sphinx.ext.autosummary',
     'numpydoc'
 ]
