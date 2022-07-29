@@ -1,2 +1,6 @@
-tests
-wolne_lektury
+__init__
+enums
+lists
+media
+texts
+urls

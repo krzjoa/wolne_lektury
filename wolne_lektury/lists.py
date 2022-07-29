@@ -15,9 +15,18 @@ from typing import Union
 
 from . import urls
 
+class ItemNotFound(Exception):
+    def __init__(self):
+        super().__init__("Searched item not found")
+
+
 def _get_list(url: str, normalize: bool = False) -> pd.DataFrame:
     url = os.path.join(urls.API, url)
     response = requests.get(url).json()
+    
+    if response == {'detail': 'Nie znaleziono.'}:
+        raise ItemNotFound()
+    
     if normalize:
         response = pd.json_normalize(response)
     return pd.DataFrame.from_records(response)
