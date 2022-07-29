@@ -1,4 +1,4 @@
-# wolne_lektury
+# wolne_lektury <img src='img/wl_logo.png' align="right" height="139" />
 > An unofficial REST API client for [Wolne Lektury](wolnelektury.pl) 
 
 ## Installation
