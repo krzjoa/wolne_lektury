@@ -6,8 +6,7 @@
 You can install this library from *PyPI*
 
 ```bash
-# Not yet
-~~pip install wolne_lektury~~
+pip install wolne_lektury
 ```
 
 or from the GitHub repo:
