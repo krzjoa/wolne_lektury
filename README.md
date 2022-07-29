@@ -24,6 +24,10 @@ import wolne_lektury as wl
 wl.get_books(authors = "Juliusz Słowacki")
 wl.get_books(authors = "adam-mickiewicz")
 
+# Use more complex queries. You can specify language as well
+wl.get_books(epoch="Romantyzm", genre="Powieść")
+wl.get_books(epoch="Modernizm", kind="Liryka", language="pol")
+
 # Get lists of authors, epochs, genres, kinds, themes and collenctions
 wl.get_authors()
 wl.get_epochs()
@@ -33,9 +37,10 @@ wl.get_themes()
 wl.get_collections()
 
 # Retrieve full textes or download them as files
-books = wl.get_texts(author="Henryk Sienkiewicz")
-list(books.values())[4]
+books = wl.get_texts(author="Ignacy Krasicki")
+print(list(books.values())[4][:60])
+'Dwa żółwie\r\n\r\n\r\n\r\nNie żałując sił własnych i ciężkiej fatygi'
 
-'Dwa żółwie\r\n\r\n\r\n\r\nNie żałując sił własnych i ciężkiej fatygi,\r\nDwa żółwie pod zakładem poszli na wyścigi.\r\nNim połowę do mety drogi ubieżeli,\r\nSpektatorowie poszli, sędziowie zasnęli.\r\nWięc rzekła im jaskółka: «Lepiej się pogodzić;\r\nPierwej niżeli biegać, nauczcie się chodzić».'
+wl.download("output_dir", author="Henryk Sienkiewicz", book_format=wl.BookFormat.PDF)
 
 ```
